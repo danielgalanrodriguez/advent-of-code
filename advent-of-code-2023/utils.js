@@ -1,3 +1,3 @@
 exports.isNumber = (string) => {
-    return /^[0-9]*$/.test(string);
-  }
+  return string === '' ? false : /^[0-9]*$/.test(string);
+}
