@@ -39,60 +39,57 @@ getInstructionsForAllSteps()
 
 // Grab seed ranges
 const seedRanges = getSeeds()
-// Sort seed range start from lower to higher
-seedRanges.sort((a, b) => {
-  return a.seedStart - b.seedStart
-})
-//console.log('seeds: ', seedRanges);
-// seedRanges.forEach(sr => {
-//   console.log('------------');
-//   console.log('start', Intl.NumberFormat('en-es').format(sr.seedStart));
-//   console.log('end', Intl.NumberFormat('en-es').format(sr.seedEnd));
-//   console.log('seeds to cover:', Intl.NumberFormat('en-es').format(sr.range));
 
-// })
+let nearestLocation = null;
 
-let nearestLocation = null
+seedRanges.forEach((range, index) => {
+  console.log(`Processing range ${index + 1}/${seedRanges.length}`);
+  console.log("Nearest location in range is:", nearestLocation);
+  
+  let seed = range.seedStart;
+  while (seed <= range.seedEnd) {
+    if (seed % 10000000 === 0) {
+      console.log(
+        `Remaining seeds in range ${index + 1}:`,
+        Intl.NumberFormat("en-es").format(range.seedEnd - seed)
+      );
+    }
+    // Step 1 Transform to: soil
+    const soil = translateToNextStep(steps.STEP_1.instructions, seed);
 
-const range = seedRanges[0]
-let seed = range.seedStart
+    // Step 2 Transform to: fertiliser
+    const fertiliser = translateToNextStep(steps.STEP_2.instructions, soil);
 
-while (seed <= range.seedEnd) {
-  console.log('nearestLocation: ', nearestLocation);
-  console.log('seed: ', seed);
-  // Step 1 Transform to: soil 
-  const soil = translateToNextStep(steps.STEP_1.instructions, seed)
+    // Step 3 Transform to: water
+    const water = translateToNextStep(steps.STEP_3.instructions, fertiliser);
 
-  // Step 2 Transform to: fertiliser 
-  const fertiliser = translateToNextStep(steps.STEP_2.instructions, soil)
+    // Step 4 Transform to: light
+    const light = translateToNextStep(steps.STEP_4.instructions, water);
 
-  // Step 3 Transform to: water 
-  const water = translateToNextStep(steps.STEP_3.instructions, fertiliser)
+    // Step 5 Transform to: temperature
+    const temperature = translateToNextStep(steps.STEP_5.instructions, light);
 
-  // Step 4 Transform to: light
-  const light = translateToNextStep(steps.STEP_4.instructions, water)
+    // Step 6 Transform to: humidity
+    const humidity = translateToNextStep(
+      steps.STEP_6.instructions,
+      temperature
+    );
 
-  // Step 5 Transform to: temperature
-  const temperature = translateToNextStep(steps.STEP_5.instructions, light)
+    // Step 7 Transform to: location
+    const location = translateToNextStep(steps.STEP_7.instructions, humidity);
 
-  // Step 6 Transform to: humidity
-  const humidity = translateToNextStep(steps.STEP_6.instructions, temperature)
-
-  // Step 7 Transform to: location
-  const location = translateToNextStep(steps.STEP_7.instructions, humidity)
-
-  if (!nearestLocation) { nearestLocation = location }
-  else {
-    location < nearestLocation ? nearestLocation = location : null
+    if (!nearestLocation) {
+      nearestLocation = location;
+    } else {
+      location < nearestLocation ? (nearestLocation = location) : null;
+    }
+    seed++;
   }
-  console.log(location);
-  seed++
-}
+});
 
 // result
-console.log('Nearest location is:', nearestLocation);
-//console.log(getNearestLocation())
-//console.log('seeds: ', seeds);
+console.log("All seeds processed!");
+console.log("Nearest location is:", nearestLocation);
 
 function getSeeds() {
   const seedInfo = fileByLine[0].split(" ")
@@ -175,14 +172,4 @@ function translateToNextStep(instructions, origin) {
   }
 
   return translatedStep
-}
-
-function getNearestLocation() {
-  let nearestLocation = seeds[0].location
-
-  seeds.forEach(seed => {
-    if (seed.location < nearestLocation) nearestLocation = seed.location
-  })
-
-  return nearestLocation
 }
