@@ -1,6 +1,23 @@
-JJJJJ 64
-32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483
+JJJJJ 64 five
+2JJJJ 64 four
+JJJJ2 64 four
+22333 11 full
+33322 11 full
+23332 11 full
+32332 11 full
+33232 11 full
+33223 11 full
+32323 11 full
+23233 11 full
+98TTT 11 three
+9T8TT 11 three
+9TT8T 11 three
+9TTT8 11 three
+T9TT8 11 three
+TT9T8 11 three
+TTT98 11 three
+TT98T 11 three
+T98TT 11 three
+23432 11 two
+A23A4 11 one
+23456 11 high
