@@ -7,7 +7,7 @@ function isGalaxy(char) {
     return char === '#'
 }
 
-function expandUniverse() {
+function expandUniverse(expansionRatio) {
     const expandedY = universe.map((line, index) => line.split('').every(elem => !isGalaxy(elem)) ? index : null).filter(e => e !== null)
     let expandedX = []
 
@@ -24,7 +24,7 @@ function expandUniverse() {
         if (!galaxyFound) expandedX.push(index)
     }
 
-    return { expandedX, expandedY }
+    return { expandedX, expandedY , expansionRatio}
 }
 
 function findNextGalaxy(universeIndex = 0, lineIndex = 0) {
@@ -66,12 +66,12 @@ function findAllGalaxies() {
 function findMinimumDistanceToGalaxy(originGalaxy, destinyGalaxy, expandedUniverse) {
     // const stepsX = Math.abs(destinyGalaxy.lineIndex - originGalaxy.lineIndex)
     // const stepsY = Math.abs(destinyGalaxy.universeIndex - originGalaxy.universeIndex)
-    const stepsX = getSteps(originGalaxy.lineIndex, destinyGalaxy.lineIndex, expandedUniverse.expandedX)
-    const stepsY = getSteps(originGalaxy.universeIndex, destinyGalaxy.universeIndex, expandedUniverse.expandedY)
+    const stepsX = getSteps(originGalaxy.lineIndex, destinyGalaxy.lineIndex, expandedUniverse.expandedX, expandedUniverse.expansionRatio)
+    const stepsY = getSteps(originGalaxy.universeIndex, destinyGalaxy.universeIndex, expandedUniverse.expandedY, expandedUniverse.expansionRatio)
     return stepsX + stepsY
 }
 
-function getSteps(origin, destiny, expandedUniverseDimension) {
+function getSteps(origin, destiny, expandedUniverseDimension, expansionRatio) {
     let orderedOrigin = origin < destiny ? origin : destiny
     let orderedDestiny = origin < destiny ? destiny : origin
     orderedOrigin++
@@ -80,7 +80,7 @@ function getSteps(origin, destiny, expandedUniverseDimension) {
     while (orderedOrigin <= orderedDestiny) {
         steps++
         if (expandedUniverseDimension.includes(orderedOrigin)) {
-            steps++
+            steps+= (expansionRatio - 1)
         }
         orderedOrigin++
     }
@@ -88,14 +88,14 @@ function getSteps(origin, destiny, expandedUniverseDimension) {
     return steps
 }
 
-function getGalaxiesMinimumDistances(galaxies) {
-    const expandedUniverse = expandUniverse()
+function getGalaxiesMinimumDistances(galaxies,expansionRatio) {
+    const expandedUniverse = expandUniverse(expansionRatio)
     let minimumDistances = []
 
     galaxies.forEach(galaxy => {
         let nextGalaxy = findNextGalaxy(galaxy.universeIndex, galaxy.lineIndex + 1)
+        
         while (nextGalaxy) {
-
             minimumDistances.push(findMinimumDistanceToGalaxy(galaxy, nextGalaxy, expandedUniverse));
             nextGalaxy = findNextGalaxy(nextGalaxy.universeIndex, nextGalaxy.lineIndex + 1)
         }
@@ -104,9 +104,15 @@ function getGalaxiesMinimumDistances(galaxies) {
     return minimumDistances
 }
 
+function enhancedDistanceCalculation(expansionRatio){
+    const galaxies = findAllGalaxies()
+    const minimumDistances = getGalaxiesMinimumDistances(galaxies,expansionRatio)
+    const solution = minimumDistances.reduce((acc, curr) => acc + curr, 0)
+    
+    console.log('solution: ', solution);
+}
 
-const galaxies = findAllGalaxies()
-const minimumDistances = getGalaxiesMinimumDistances(galaxies)
-const solution = minimumDistances.reduce((acc, curr) => acc + curr, 0)
+enhancedDistanceCalculation(2)
 
-console.log('solution: ', solution);
+
+module.exports = { enhancedDistanceCalculation }
