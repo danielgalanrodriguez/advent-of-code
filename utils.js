@@ -4,3 +4,5 @@ exports.readFile = (path) => {
   const fileByLine = file.split(/\r?\n/)
   return fileByLine
 }
+
+exports.sortNumberList = (a, b) => a - b
