@@ -5,4 +5,10 @@ exports.readFile = (path) => {
   return fileByLine
 }
 
+exports.readEntireFile = (path) => {
+  const fs = require('fs')
+  const file = fs.readFileSync(path, { encoding: 'utf8' })
+  return file
+}
+
 exports.sortNumberList = (a, b) => a - b
