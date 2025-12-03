@@ -25,7 +25,7 @@ batteryBanks.forEach(bank => {
     const { maxJoltage: maxJoltage1, bankPosition } = getMaxJoltage(bank.split('').slice(0, -1))
 
     // Get the second max Joltage
-    // The second Joltage has to come after the first on, so only care about anything after the first one.
+    // The second Joltage has to come after the first one, so only care about batteries after the first one.
     const { maxJoltage: maxJoltage2 } = getMaxJoltage(bank.split('').slice(bankPosition + 1))
 
     maxJoltagePerBank.push(`${maxJoltage1}${maxJoltage2}`)
